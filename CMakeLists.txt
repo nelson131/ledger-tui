@@ -8,6 +8,7 @@ add_executable(ledger-tui
     src/main.cpp
     src/app.cpp
     src/utils/error_handler.cpp
+    src/db/database.cpp
 )
 
 target_link_libraries(ledger-tui

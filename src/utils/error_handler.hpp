@@ -9,8 +9,10 @@ enum ErrorCode {
     OK,
     ERR_NULLPTR_OBJECT,
     ERR_EMPTY_OBJECT,
+    ERR_FILE_NOT_FOUND,
     // Database
-    ERR_OPEN_DATABASE
+    ERR_DATABASE_OPEN,
+    ERR_DATABASE_EXECUTE
 };
 
 struct Error {
