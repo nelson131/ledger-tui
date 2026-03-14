@@ -9,7 +9,7 @@
 int main() {
     std::unique_ptr<Application> app = std::make_unique<Application>();
 
-    Error err = app->init();
+    Error err = app->login();
     if (err.code != 1) {
         return 0;
     }

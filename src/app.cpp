@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-Application::Application() : run(false) {}
+Application::Application() : run(false), screen(nullptr) {}
 
-Error Application::init() {}
+Error Application::login() {}
 
 void Application::render() {}
 

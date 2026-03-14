@@ -14,6 +14,7 @@ target_link_libraries(ledger-tui
     ftxui::screen
     ftxui::dom
     ftxui::component
+    SQLite::SQLite3
 )
 
 add_custom_command(TARGET ledger-tui POST_BUILD
