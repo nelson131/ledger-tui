@@ -5,7 +5,6 @@
 Application::Application()
     : name(""),
       version(""),
-      run(false),
       screen(ScreenInteractive::TerminalOutput()),
       auth(&database) {}
 
@@ -43,7 +42,8 @@ Error Application::welcome() {
     auto login_button = Button("Login", [&] {
         Error login_res = auth.login_user(username, password);
         if (login_res.code == 2) {
-            status = "Success";
+            status = "success: login";
+            screen.ExitLoopClosure();
         } else {
             status = login_res.message;
         }
@@ -52,7 +52,7 @@ Error Application::welcome() {
     auto reg_button = Button("Register", [&] {
         Error reg_res = auth.register_user(username, password);
         if (reg_res.code == 2) {
-            status = "success";
+            status = "success: register";
         } else {
             status = reg_res.message;
         }
@@ -88,9 +88,3 @@ Error Application::welcome() {
 
     return {NONE};
 }
-
-void Application::render() {}
-
-void Application::handle_input() {}
-
-const bool& Application::is_running() const { return run; }

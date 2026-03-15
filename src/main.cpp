@@ -25,10 +25,5 @@ int main() {
         return 0;
     }
 
-    while (app->is_running()) {
-        app->handle_input();
-        app->render();
-    }
-
     return 0;
 }

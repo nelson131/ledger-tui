@@ -20,15 +20,9 @@ class Application {
     Error init(const std::string& name, const std::string& version);
     Error welcome();
 
-    void render();
-    void handle_input();
-
-    const bool& is_running() const;
-
    private:
     std::string name;
     std::string version;
-    bool        run;
 
     ftxui::ScreenInteractive screen;
     Database                 database;
