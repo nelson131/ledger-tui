@@ -6,6 +6,7 @@
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 
+#include "auth.hpp"
 #include "db/database.hpp"
 #include "db/db_handler.hpp"
 #include "utils/error_handler.hpp"
@@ -31,4 +32,5 @@ class Application {
 
     ftxui::ScreenInteractive screen;
     Database                 database;
+    Auth                     auth;
 };

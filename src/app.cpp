@@ -6,7 +6,8 @@ Application::Application()
     : name(""),
       version(""),
       run(false),
-      screen(ScreenInteractive::TerminalOutput()) {}
+      screen(ScreenInteractive::TerminalOutput()),
+      auth(&database) {}
 
 Error Application::init(const std::string& name, const std::string& version) {
     this->name = name;
@@ -39,9 +40,23 @@ Error Application::welcome() {
     auto username_input = Input(&username, "username");
     auto password_input = Input(&password, "password");
 
-    auto login_button = Button("Login", [&] { status = "Login pressed"; });
+    auto login_button = Button("Login", [&] {
+        Error login_res = auth.login_user(username, password);
+        if (login_res.code == 2) {
+            status = "Success";
+        } else {
+            status = login_res.message;
+        }
+    });
 
-    auto reg_button = Button("Register", [&] { status = "Register pressed"; });
+    auto reg_button = Button("Register", [&] {
+        Error reg_res = auth.register_user(username, password);
+        if (reg_res.code == 2) {
+            status = "success";
+        } else {
+            status = reg_res.message;
+        }
+    });
 
     auto buttons = Container::Horizontal({login_button, reg_button});
     auto inputs =
