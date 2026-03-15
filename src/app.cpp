@@ -6,7 +6,7 @@ Application::Application()
     : name(""),
       version(""),
       run(false),
-      screen(ftxui::ScreenInteractive::TerminalOutput()) {}
+      screen(ScreenInteractive::TerminalOutput()) {}
 
 Error Application::init(const std::string& name, const std::string& version) {
     this->name = name;
@@ -36,48 +36,37 @@ Error Application::welcome() {
     std::string password;
     std::string status = "";
 
-    auto username_input = ftxui::Input(&username, "username");
-    auto password_input = ftxui::Input(&password, "password");
+    auto username_input = Input(&username, "username");
+    auto password_input = Input(&password, "password");
 
-    auto login_button =
-        ftxui::Button("Login", [&] { status = "Login pressed"; });
+    auto login_button = Button("Login", [&] { status = "Login pressed"; });
 
-    auto reg_button =
-        ftxui::Button("Register", [&] { status = "Register pressed"; });
+    auto reg_button = Button("Register", [&] { status = "Register pressed"; });
 
-    auto buttons = ftxui::Container::Horizontal({login_button, reg_button});
+    auto buttons = Container::Horizontal({login_button, reg_button});
     auto inputs =
-        ftxui::Container::Vertical({username_input, password_input, buttons});
+        Container::Vertical({username_input, password_input, buttons});
 
     auto renderer = Renderer(inputs, [&] {
-        return ftxui::vbox(
-                   {ftxui::text("ledger-tui") | ftxui::bold | ftxui::center,
-                    ftxui::separator(),
+        return vbox({text(name) | bold | center, text(version) | bold | center,
+                     separator(),
 
-                    ftxui::hbox(
-                        {ftxui::text("Username: ") |
-                             ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 12),
-                         username_input->Render() | ftxui::flex}),
+                     hbox({text("Username: ") | size(WIDTH, EQUAL, 12),
+                           username_input->Render() | flex}),
 
-                    ftxui::hbox(
-                        {ftxui::text("Password: ") |
-                             ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 12),
-                         password_input->Render() | ftxui::flex}),
+                     hbox({text("Password: ") | size(WIDTH, EQUAL, 12),
+                           password_input->Render() | flex}),
 
-                    ftxui::text(""),
+                     text(""),
 
-                    ftxui::hbox({ftxui::filler(), login_button->Render(),
-                                 ftxui::text(" "), reg_button->Render(),
-                                 ftxui::filler()}),
+                     hbox({filler(), login_button->Render(), text(" "),
+                           reg_button->Render(), filler()}),
 
-                    ftxui::text(""), ftxui::separator(),
+                     text(""), separator(),
 
-                    ftxui::hbox(
-                        {ftxui::text("Status: "),
-                         ftxui::text(status) | color(ftxui::Color::Red)})}) |
-               ftxui::border |
-               ftxui::size(ftxui::WIDTH, ftxui::GREATER_THAN, 40) |
-               ftxui::center;
+                     hbox({text("Status: "),
+                           text(status) | color(Color::Red)})}) |
+               border | size(WIDTH, GREATER_THAN, 40) | center;
     });
 
     screen.Loop(renderer);

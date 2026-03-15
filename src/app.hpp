@@ -10,6 +10,8 @@
 #include "db/db_handler.hpp"
 #include "utils/error_handler.hpp"
 
+using namespace ftxui;
+
 class Application {
    public:
     Application();
