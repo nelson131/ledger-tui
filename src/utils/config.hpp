@@ -41,7 +41,7 @@ class Config {
                 if (pos != std::string::npos) {
                     if (line.substr(0, pos) == key) {
                         std::string        value = line.substr(pos + 1);
-                        std::ostringstream str(value);
+                        std::istringstream str(value);
 
                         T res{};
                         str >> res;

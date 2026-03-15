@@ -44,5 +44,3 @@ Error Database::execute(const std::string& query) {
 }
 
 sqlite3* Database::get_connection() { return db; }
-
-Error Database::load() {}

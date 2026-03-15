@@ -18,8 +18,6 @@ class Database {
     Error    execute(const std::string& query);
     sqlite3* get_connection();
 
-    Error load();
-
    private:
     sqlite3* db;
 };
