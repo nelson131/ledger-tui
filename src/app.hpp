@@ -20,11 +20,12 @@ class Application {
     Error init(const std::string& name, const std::string& version);
     Error welcome();
 
+    void dashboard();
+
    private:
     std::string name;
     std::string version;
 
-    ftxui::ScreenInteractive screen;
-    Database                 database;
-    Auth                     auth;
+    Database database;
+    Auth     auth;
 };

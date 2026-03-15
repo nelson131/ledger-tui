@@ -72,5 +72,10 @@ Error Auth::login_user(const std::string& username,
     sqlite3_finalize(table);
 
     this->user_id = user_id;
+    this->username = username;
     return {OK, ""};
 }
+
+const int& Auth::get_id() const { return user_id; }
+
+const std::string& Auth::get_username() const { return username; }

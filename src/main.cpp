@@ -25,5 +25,7 @@ int main() {
         return 0;
     }
 
+    app->dashboard();
+
     return 0;
 }

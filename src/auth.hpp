@@ -14,10 +14,12 @@ class Auth {
                         const std::string& password);
     Error login_user(const std::string& username, const std::string& password);
 
-    const int& get_id() const;
+    const int&         get_id() const;
+    const std::string& get_username() const;
 
    private:
     Database* database;
 
-    int user_id;
+    int         user_id;
+    std::string username;
 };
