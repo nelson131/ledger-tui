@@ -9,7 +9,7 @@ Error Application::init(const std::string& name, const std::string& version) {
     this->name = name;
     this->version = version;
 
-    Error tables_error = DBHandler::init_tables(&database);
+    Error tables_error = DBHandler::init_auth_table(&database);
     if (tables_error.code != 1) {
         return tables_error;
     }

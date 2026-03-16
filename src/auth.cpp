@@ -31,6 +31,7 @@ Error Auth::register_user(const std::string& username,
     }
 
     sqlite3_finalize(table);
+
     return {OK, ""};
 }
 
