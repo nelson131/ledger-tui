@@ -80,45 +80,12 @@ void Application::dashboard() {
     auto screen = ScreenInteractive::Fullscreen();
 
     auto header = UIHandler::make_header(name, version, auth.get_username());
+    auto top_menu = UIHandler::make_top_menu();
 
-    // Top Menu <<<
-    auto dashboard_button = Button("Dashboard", [&] {
-        // dashboard logic
-    });
-    auto dashboard_button_render = Renderer(dashboard_button, [&] {
-        auto e = text("Dashboard");
-        if (dashboard_button->Focused()) e = e | color(Color::Cyan) | bold;
-        return e;
-    });
+    auto layout = Container::Vertical({top_menu});
 
-    auto transactions_button = Button("Transactions", [&] {
-        // transactions logic
-    });
-    auto transactions_button_render = Renderer(transactions_button, [&] {
-        auto e = text("Transactions");
-        if (transactions_button->Focused()) e = e | color(Color::Cyan) | bold;
-        return e;
-    });
-
-    auto stats_button = Button("Statistics", [&] {
-        // stats logic
-    });
-    auto stats_button_render = Renderer(stats_button, [&] {
-        auto e = text("Statistics");
-        if (stats_button->Focused()) e = e | color(Color::Cyan) | bold;
-        return e;
-    });
-
-    auto top_menu = Container::Horizontal(
-        {dashboard_button, transactions_button, stats_button});
-    // Top Menu >>>
-
-    auto renderer = Renderer(top_menu, [&] {
-        return vbox(
-            {header, hbox({dashboard_button_render->Render(), text(" | "),
-                           transactions_button_render->Render(), text(" | "),
-                           stats_button_render->Render()})});
-    });
+    auto renderer =
+        Renderer(layout, [&] { return vbox({header, layout->Render()}); });
 
     screen.Loop(renderer);
 }
