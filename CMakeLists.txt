@@ -10,6 +10,7 @@ add_executable(ledger-tui
     src/main.cpp
     src/app.cpp
     src/auth.cpp
+    src/ui_handler.cpp
     src/utils/error_handler.cpp
     src/utils/config.cpp
     src/utils/sha256.cpp

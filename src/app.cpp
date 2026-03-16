@@ -9,20 +9,9 @@ Error Application::init(const std::string& name, const std::string& version) {
     this->name = name;
     this->version = version;
 
-    Error init_err = database.init("resources/ledger.db");
-    if (init_err.code != 1) {
-        return init_err;
-    }
-
-    Error exec_err = database.execute(R"(
-    CREATE TABLE IF NOT EXISTS users_data(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password_sha256 TEXT
-    );
-    )");
-    if (exec_err.code != 1) {
-        return exec_err;
+    Error tables_error = DBHandler::init_tables(&database);
+    if (tables_error.code != 1) {
+        return tables_error;
     }
 
     return {NONE};
@@ -90,11 +79,7 @@ Error Application::welcome() {
 void Application::dashboard() {
     auto screen = ScreenInteractive::Fullscreen();
 
-    // Header <<<
-    auto header = hbox({text(name + " | "), text(version + " | "), filler(),
-                        text("Current user: " + auth.get_username())}) |
-                  bold | border;
-    // Header >>>
+    auto header = UIHandler::make_header(name, version, auth.get_username());
 
     // Top Menu <<<
     auto dashboard_button = Button("Dashboard", [&] {
