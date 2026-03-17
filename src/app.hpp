@@ -27,6 +27,7 @@ class Application {
     std::string name;
     std::string version;
 
-    Database database;
+    Database auth_db;
+    Database user_db;
     Auth     auth;
 };

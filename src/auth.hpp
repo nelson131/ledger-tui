@@ -8,7 +8,7 @@
 
 class Auth {
    public:
-    Auth(Database* database);
+    Auth(Database* auth_db, Database* user_db);
 
     Error register_user(const std::string& username,
                         const std::string& password);
@@ -18,7 +18,8 @@ class Auth {
     const std::string& get_username() const;
 
    private:
-    Database* database;
+    Database* auth_db;
+    Database* user_db;
 
     int         user_id;
     std::string username;

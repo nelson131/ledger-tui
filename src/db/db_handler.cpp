@@ -133,4 +133,20 @@ const int get_id(Database* database, const std::string& username) {
     return user_id;
 }
 
+void bind(sqlite3_stmt* stmt, int index, int value) {
+    sqlite3_bind_int(stmt, index, value);
+}
+
+void bind(sqlite3_stmt* stmt, int index, double value) {
+    sqlite3_bind_double(stmt, index, value);
+}
+
+void bind(sqlite3_stmt* stmt, int index, const std::string& value) {
+    sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+}
+
+void bind(sqlite3_stmt* stmt, int index, const char* value) {
+    sqlite3_bind_text(stmt, index, value, -1, SQLITE_TRANSIENT);
+}
+
 };  // namespace DBHandler
