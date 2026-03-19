@@ -31,10 +31,9 @@ Error EntryHandler::make_transaction(const std::string& source,
     }
 
     std::time_t timestamp = get_time();
-    bool        is_recur = false;  // todo
-
+    bool        is_recur = false;
     std::string query =
-        "INSERT INTO transactions date, source, amount, currency, is_recur, "
+        "INSERT INTO transactions (date, source, amount, currency, is_recur, "
         "tag) "
         "VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -42,6 +41,51 @@ Error EntryHandler::make_transaction(const std::string& source,
                                          currency, is_recur, tag);
     if (insert_err.code != 1) {
         return insert_err;
+    }
+
+    return {NONE};
+}
+
+Error EntryHandler::edit_transaction(const int& id) {}
+
+Error EntryHandler::delete_transaction(const int& id) {}
+
+Error EntryHandler::create_tag(const std::string& tag) {
+    if (tag.empty()) {
+        return {ERR_EMPTY_OBJECT, "entry_handler:create_tag:tag"};
+    }
+
+    std::string query = "INSERT INTO tags(user_id, name) VALUES (?, ?)";
+    Error       err = DBHandler::insert(db, query, user_id, tag);
+    if (err.code != 1) {
+        return err;
+    }
+
+    return {NONE};
+}
+
+Error EntryHandler::make_recurring(const std::string& source,
+                                   const double&      amount,
+                                   const std::string& currency,
+                                   const std::string& tag,
+                                   const size_t&      day_interval) {
+    if (source.empty() || currency.empty() || tag.empty()) {
+        return {ERR_EMPTY_OBJECT, "entry_handler:make_reccuring:arg"};
+    }
+
+    if (amount <= 0) {
+        return {ERR_WRONG_OR_NEGATIVE_NUM,
+                "entry_handler:make_reccuring:amiunt"};
+    }
+
+    std::string query =
+        "INSERT INTO recur_sources (user_id, source, amount, currency, tag, "
+        "interval_days) VALUES (?, ?, ?, ?, ?, ?)";
+
+    Error err = DBHandler::insert(db, query, user_id, source, amount, currency,
+                                  tag, (int)day_interval);
+    if (err.code != 1) {
+        return err;
     }
 
     return {NONE};

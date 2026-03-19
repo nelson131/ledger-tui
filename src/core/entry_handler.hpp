@@ -19,7 +19,9 @@ class EntryHandler {
     Error edit_transaction(const int& id);
 
     Error create_tag(const std::string& tag);
-    Error make_recurring(const std::string& source);
+    Error make_recurring(const std::string& source, const double& amount,
+                         const std::string& currency, const std::string& tag,
+                         const size_t& day_interval);
 
    private:
     Database* db;
