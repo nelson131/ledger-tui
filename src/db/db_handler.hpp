@@ -3,6 +3,7 @@
 #include <openssl/sha.h>
 #include <sqlite3.h>
 
+#include <ctime>
 #include <string>
 #include <utility>
 
@@ -11,8 +12,7 @@
 
 namespace DBHandler {
 
-Error init_auth_table(Database* database);
-Error init_user_table(Database* database, const int& user_id);
+Error init_tables(Database* database);
 
 sqlite3_stmt* prepare(Database* database, const std::string& query);
 
@@ -22,6 +22,7 @@ void bind(sqlite3_stmt* stmt, int index, int value);
 void bind(sqlite3_stmt* stmt, int index, double value);
 void bind(sqlite3_stmt* stmt, int index, const std::string& value);
 void bind(sqlite3_stmt* stmt, int index, const char* value);
+void bind(sqlite3_stmt* stmt, int index, std::time_t time);
 
 template <typename... targs>
 Error insert(Database* database, const std::string& query, targs&&... args) {

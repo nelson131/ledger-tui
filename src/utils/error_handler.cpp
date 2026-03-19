@@ -9,6 +9,7 @@ const std::vector<const char*> error_messages = {
     "Nullptr object",
     "Empty object",
     "Failed to find the file",
+    "Inputed num is wrong or negative",
     "Something went wrong with db operation",
     "Failed to open database",
     "Failed to execute database operation",

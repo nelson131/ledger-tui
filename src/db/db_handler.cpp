@@ -6,64 +6,74 @@ using namespace DBHandler;
 
 namespace DBHandler {
 
-// Creating user data table(id, name, password in sha256)
-Error init_auth_table(Database* database) {
+Error init_tables(Database* database) {
     if (!database) {
         return {ERR_NULLPTR_OBJECT, "db_handler:init_auth_table:database"};
     }
 
-    Error init_err = database->init("resources/ledger-auth.db");
-    if (init_err.code != 1) {
-        return init_err;
+    Error err = database->init("resources/ledger.db");
+    if (err.code != 1) {
+        return err;
     }
 
-    Error user_err = database->execute(R"(
-    CREATE TABLE IF NOT EXISTS users_data(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    // Creating the main table with auth data and balance + last login at
+    // account time
+    err = database->execute(R"(
+    CREATE TABLE IF NOT EXISTS users(
+    id UNSIGNED INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
-    password_sha256 TEXT
+    password_sha256 TEXT,
+    balance DOUBLE,
+    last_login TIMESTAMP
     );
     )");
-
-    if (user_err.code != 1) {
-        return user_err;
+    if (err.code != 1) {
+        return err;
     }
 
-    return {NONE};
-}
-
-// Creating two tables: user transactions (date, source, amount, currency, is
-// recur, tag) and user singletons like balance, last time auth and sources
-// which must be recur
-Error init_user_table(Database* database, const int& user_id) {
-    if (!database) {
-        return {ERR_NULLPTR_OBJECT, "db_handler:init_user_table:database"};
+    // Creating the transactions table
+    err = database->execute(R"(
+    CREATE TABLE IF NOT EXISTS transactions(
+    id UNSIGNED INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id UNSIGNED INTEGER,
+    date TIMESTAMP,
+    source TEXT,
+    amount DOUBLE,
+    is_recur BOOL,
+    currency TEXT,
+    tag TEXT
+    )
+    )");
+    if (err.code != 1) {
+        return err;
     }
 
-    if (!database->get_connection()) {
-        Error init_err = database->init("resources/ledger-users-data.db");
-        if (init_err.code != 1) {
-            return init_err;
-        }
+    // Creating the recurring sources table
+    // contains the sources that should be applied automaticly
+    // relative to interval time
+    err = database->execute(R"(
+    CREATE TABLE IF NOT EXISTS recur_sources(
+    user_id UNSIGNED INTEGER,
+    source TEXT,
+    amount DOUBLE,
+    currency TEXT,
+    tag TEXT,
+    interval_days INTEGER
+    )
+    )");
+    if (err.code != 1) {
+        return err;
     }
 
-    const std::string prefix = "user-" + std::to_string(user_id);
-
-    const std::string query_transactions =
-        "CREATE TABLE IF NOT EXISTS " + prefix + "-transactions" +
-        "(date TIMESTAMP, source TEXT, amount DOUBLE, currency TEXT, is_recur "
-        "BOOL, tag TEXT)";
-    Error tr_err = database->execute(query_transactions);
-    if (tr_err.code != 1) {
-        return tr_err;
-    }
-
-    const std::string query_singletons =
-        "CREATE TABLE IF NOT EXISTS " + prefix + "-singletons" +
-        "(balance DOUBLE, last_date TIMESTAMP, recur_source TEXT)";
-    Error sngl_err = database->execute(query_transactions);
-    if (sngl_err.code != 1) {
-        return sngl_err;
+    // Creating the tags table, every tag is attached to specific user
+    err = database->execute(R"(
+    CREATE TABLE IF NOT EXISTS tags(
+    user_id UNSIGNED INTEGER,
+    name TEXT
+    )
+    )");
+    if (err.code != 1) {
+        return err;
     }
 
     return {NONE};
@@ -147,6 +157,10 @@ void bind(sqlite3_stmt* stmt, int index, const std::string& value) {
 
 void bind(sqlite3_stmt* stmt, int index, const char* value) {
     sqlite3_bind_text(stmt, index, value, -1, SQLITE_TRANSIENT);
+}
+
+void bind(sqlite3_stmt* stmt, int index, std::time_t time) {
+    sqlite3_bind_int64(stmt, index, time);
 }
 
 };  // namespace DBHandler

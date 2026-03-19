@@ -5,10 +5,11 @@
 #include "db/db_handler.hpp"
 #include "utils/error_handler.hpp"
 #include "utils/sha256.hpp"
+#include "utils/time.hpp"
 
 class Auth {
    public:
-    Auth(Database* auth_db, Database* user_db);
+    Auth(Database* db);
 
     Error register_user(const std::string& username,
                         const std::string& password);
@@ -18,9 +19,9 @@ class Auth {
     const std::string& get_username() const;
 
    private:
-    Database* auth_db;
-    Database* user_db;
+    Database* db;
 
     int         user_id;
     std::string username;
+    std::time_t last_login_time;
 };

@@ -3,13 +3,13 @@
 #include <ftxui/dom/elements.hpp>
 #include <iostream>
 
-Application::Application() : name(""), version(""), auth(&auth_db, &user_db) {}
+Application::Application() : name(""), version(""), auth(&db) {}
 
 Error Application::init(const std::string& name, const std::string& version) {
     this->name = name;
     this->version = version;
 
-    Error err = DBHandler::init_auth_table(&auth_db);
+    Error err = DBHandler::init_tables(&db);
     if (err.code != 1) {
         return err;
     }

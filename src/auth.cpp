@@ -2,17 +2,18 @@
 
 #include <iostream>
 
-Auth::Auth(Database* auth_db, Database* user_db)
-    : auth_db(auth_db), user_db(user_db), user_id(-1) {}
+Auth::Auth(Database* db) : db(db), user_id(-1) {}
 
 Error Auth::register_user(const std::string& username,
                           const std::string& password) {
     const std::string query =
-        "INSERT INTO users_data (username, password_sha256) VALUES (?, ?);";
+        "INSERT INTO users_data (username, password_sha256, balance, "
+        "last_login) VALUES (?, ?, ?, ?);";
     std::string password_sha256 = sha256(password);
+    std::time_t last_login = get_time();
 
     Error insert_err =
-        DBHandler::insert(auth_db, query, username, password_sha256);
+        DBHandler::insert(db, query, username, password_sha256, 0, last_login);
     if (insert_err.code != 1) {
         return insert_err;
     }
@@ -25,7 +26,7 @@ Error Auth::login_user(const std::string& username,
     const std::string query =
         "SELECT id, password_sha256 FROM users_data WHERE username = ?;";
 
-    sqlite3_stmt* stmt = DBHandler::query(auth_db, query, username);
+    sqlite3_stmt* stmt = DBHandler::query(db, query, username);
     if (!stmt) {
         return {ERR_NULLPTR_OBJECT, "auth:login_user:stmt"};
     }
