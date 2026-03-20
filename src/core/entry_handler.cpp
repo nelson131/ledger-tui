@@ -46,9 +46,20 @@ Error EntryHandler::make_transaction(const std::string& source,
     return {NONE};
 }
 
-Error EntryHandler::edit_transaction(const int& id) {}
+Error EntryHandler::delete_transaction(const int& id) {
+    if (id < 0) {
+        return {ERR_WRONG_OR_NEGATIVE_NUM,
+                "entry_handler:delete_transaction:id"};
+    }
 
-Error EntryHandler::delete_transaction(const int& id) {}
+    const std::string query = "DELETE FROM transactions WHERE user_id = ?";
+    sqlite3_stmt*     stmt = DBHandler::query(db, query, id);
+    if (!stmt) {
+        return {ERR_NULLPTR_OBJECT, "entry_handler:delete_transaction:stmt"};
+    }
+
+    return {NONE};
+}
 
 Error EntryHandler::create_tag(const std::string& tag) {
     if (tag.empty()) {
