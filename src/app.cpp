@@ -31,6 +31,13 @@ Error Application::welcome() {
         if (login_res.code == 2) {
             status = "success: login";
             screen.ExitLoopClosure()();
+
+            Error err = entry_handler.init(&db, auth.get_id());
+            if (err.code != 1) {
+                return err;
+            } else {
+                return (Error){OK, ""};
+            }
         } else {
             status = login_res.message;
         }
@@ -80,7 +87,9 @@ void Application::dashboard() {
     auto screen = ScreenInteractive::Fullscreen();
 
     auto header = UIHandler::make_header(name, version, auth.get_username());
-    auto top_menu = UIHandler::make_top_menu();
+    auto top_menu = UIHandler::make_top_menu(
+        &screen, [this] { this->dashboard(); },
+        [this] { this->transactions(); }, [this] { this->statistics(); });
 
     auto layout = Container::Vertical({top_menu});
 
@@ -89,3 +98,19 @@ void Application::dashboard() {
 
     screen.Loop(renderer);
 }
+
+void Application::transactions() {
+    auto screen = ScreenInteractive::Fullscreen();
+
+    auto header = UIHandler::make_header(name, version, auth.get_username());
+    auto top_menu = UIHandler::make_top_menu(
+        &screen, [this] { this->dashboard(); },
+        [this] { this->transactions(); }, [this] { this->statistics(); });
+
+    auto layout = Container::Vertical({top_menu});
+
+    auto renderer =
+        Renderer(layout, [&] { return vbox({header, layout->Render()}); });
+}
+
+void Application::statistics() {}

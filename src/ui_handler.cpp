@@ -12,10 +12,22 @@ Element make_header(const std::string& app_name, const std::string& app_version,
            bold | border;
 }
 
-Component make_top_menu() {
-    auto dashboard_button = Button("Dashboard", [&] {});
-    auto transactions_button = Button("Transactions", [] {});
-    auto stats_button = Button("Statistics", [&] {});
+Component make_top_menu(ScreenInteractive*    screen,
+                        std::function<void()> dashboard,
+                        std::function<void()> transactions,
+                        std::function<void()> stats) {
+    auto dashboard_button = Button("Dashboard", [&] {
+        dashboard();
+        screen->ExitLoopClosure()();
+    });
+    auto transactions_button = Button("Transactions", [&] {
+        transactions();
+        screen->ExitLoopClosure()();
+    });
+    auto stats_button = Button("Statistics", [&] {
+        stats();
+        screen->ExitLoopClosure()();
+    });
 
     auto container = Container::Horizontal(
         {dashboard_button, transactions_button, stats_button});
@@ -35,5 +47,7 @@ Component make_top_menu() {
          render_button(transactions_button, "  Transactions  "),
          render_button(stats_button, "  Statistics  ")});
 };
+
+Component make_transactions_table() {}
 
 };  // namespace UIHandler

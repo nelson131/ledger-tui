@@ -13,15 +13,15 @@ int main() {
     const std::string app_version =
         config->get<std::string>("general", "version");
 
-    Error init_err = app->init(app_name, app_version);
-    if (init_err.code != 1) {
-        raise_error(init_err);
+    Error err = app->init(app_name, app_version);
+    if (err.code != 1) {
+        raise_error(err);
         return 0;
     }
 
-    Error login_err = app->welcome();
-    if (login_err.code != 1) {
-        raise_error(login_err);
+    err = app->welcome();
+    if (err.code != 1 || err.code != 2) {
+        raise_error(err);
         return 0;
     }
 

@@ -7,6 +7,7 @@
 #include <ftxui/dom/elements.hpp>
 
 #include "auth.hpp"
+#include "core/entry_handler.hpp"
 #include "db/database.hpp"
 #include "db/db_handler.hpp"
 #include "ui_handler.hpp"
@@ -22,11 +23,14 @@ class Application {
     Error welcome();
 
     void dashboard();
+    void transactions();
+    void statistics();
 
    private:
     std::string name;
     std::string version;
 
-    Database db;
-    Auth     auth;
+    Database     db;
+    Auth         auth;
+    EntryHandler entry_handler;
 };
